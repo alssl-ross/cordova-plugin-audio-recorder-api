@@ -13,6 +13,14 @@ AudioRecorderAPI.prototype.playback = function (successCallback, errorCallback) 
   cordova.exec(successCallback, errorCallback, "AudioRecorderAPI", "playback", []);
 };
 
+AudioRecorderAPI.prototype.stopPlayback = function (successCallback, errorCallback) {
+  cordova.exec(successCallback, errorCallback, "AudioRecorderAPI", "stopPlayback", []);
+};
+
+AudioRecorderAPI.prototype.pausePlayback = function (successCallback, errorCallback) {
+  cordova.exec(successCallback, errorCallback, "AudioRecorderAPI", "pausePlayback", []);
+};
+
 AudioRecorderAPI.prototype.dopermissions = function (successCallback, errorCallback) {
     cordova.exec(successCallback, errorCallback, "AudioRecorderAPI", "doPermissions", []);
 };

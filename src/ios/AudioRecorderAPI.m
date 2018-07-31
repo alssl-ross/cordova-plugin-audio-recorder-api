@@ -11,26 +11,28 @@
 
   [self.commandDelegate runInBackground:^{
 
+  player = nil;
+
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
 
     NSError *err;
     [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:&err];
     if (err)
-    {      
+    {
 	  NSLog(@"AVAudioSession error AVAudioSessionCategoryPlayAndRecord:%@",err);
     }
-	
+
 	err = nil;
     [audioSession setActive:YES error:&err];
     if (err)
-    {     
+    {
 	  NSLog(@"AVAudioSession error setActive:%@",err);
     }
 
      err = nil;
     [audioSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&err];
     if (err)
-    {     
+    {
 	  NSLog(@"AVAudioSession error overrideOutputAudioPort:%@",err);
     }
 
@@ -79,20 +81,41 @@
 
 - (void)playback:(CDVInvokedUrlCommand*)command {
   _command = command;
-  [self.commandDelegate runInBackground:^{
-    NSLog(@"recording playback");
-    NSURL *url = [NSURL fileURLWithPath:recorderFilePath];
-    NSError *err;
-    player = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:&err];
-    player.numberOfLoops = 0;
-    player.delegate = self;
-    [player prepareToPlay];
-    [player play];
-    if (err) {
-      NSLog(@"%@ %d %@", [err domain], [err code], [[err userInfo] description]);
-    }
-    NSLog(@"playing");
-  }];
+  if(!player) {
+      [self.commandDelegate runInBackground:^{
+        NSLog(@"recording playback");
+        NSURL *url = [NSURL fileURLWithPath:recorderFilePath];
+        NSError *err;
+        player = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:&err];
+        player.numberOfLoops = 0;
+        player.delegate = self;
+        [player prepareToPlay];
+        [player play];
+        if (err) {
+          NSLog(@"%@ %d %@", [err domain], [err code], [[err userInfo] description]);
+        }
+        NSLog(@"playing");
+      }];
+  }
+  else {
+      NSLog(@"Resuming playback");
+      [player play];
+  }
+}
+
+- (void)pausePlayback:(CDVInvokedUrlCommand*)command {
+    _command = command;
+    [player pause];
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Playback paused"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:_command.callbackId];
+}
+
+- (void)stopPlayback:(CDVInvokedUrlCommand*)command {
+    _command = command;
+    [player stop];
+    [player setCurrentTime:0];
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Playback stopped"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:_command.callbackId];
 }
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {

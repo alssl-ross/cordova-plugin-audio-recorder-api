@@ -36,11 +36,10 @@
 
     NSMutableDictionary *recordSettings = [[NSMutableDictionary alloc] init];
     [recordSettings setObject:[NSNumber numberWithInt: kAudioFormatMPEG4AAC] forKey: AVFormatIDKey];
-    [recordSettings setObject:[NSNumber numberWithFloat:22050.0] forKey: AVSampleRateKey];
-    [recordSettings setObject:[NSNumber numberWithInt:1] forKey:AVNumberOfChannelsKey];
-    [recordSettings setObject:[NSNumber numberWithInt:56000] forKey:AVEncoderBitRateKey];
-    [recordSettings setObject:[NSNumber numberWithInt:8] forKey:AVLinearPCMBitDepthKey];
-    [recordSettings setObject:[NSNumber numberWithInt: AVAudioQualityHigh] forKey: AVEncoderAudioQualityKey];
+    [recordSettings setObject:[NSNumber numberWithFloat:44100.0] forKey: AVSampleRateKey];
+    [recordSettings setObject:[NSNumber numberWithInt:2] forKey:AVNumberOfChannelsKey];
+    [recordSettings setObject:[NSNumber numberWithInt:320000] forKey:AVEncoderBitRateKey];
+    [recordSettings setObject:[NSNumber numberWithInt: AVAudioQualityMax] forKey: AVEncoderAudioQualityKey];
 
     // Create a new dated file
     NSString *uuid = [[NSUUID UUID] UUIDString];
